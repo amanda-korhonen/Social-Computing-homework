@@ -28,12 +28,41 @@ for table in ['comments', 'follows', 'posts', 'reactions', 'users']:
 # Exercise 1.2
 try: 
     lurkers_df = pd.read_sql_query("""
-     SELECT COUNT(*) AS lurkers_count
-     FROM users
-     WHERE id NOT IN (SELECT user_id FROM comments)
+    SELECT 
+        COUNT(id) AS lurkers_count
+    FROM users
+    WHERE id NOT IN (SELECT user_id FROM comments)
         AND id NOT IN (SELECT user_id FROM posts)
         AND id NOT IN (SELECT user_id FROM reactions)
-     """, con)
+    """, con)
     print(lurkers_df)
+except Exception as e:
+    print(f"Error occurred: {e}")
+
+# Exercise 1.3
+try: 
+    most_engaged_df = pd.read_sql_query("""
+    SELECT 
+        user.id as user_id,
+        users.username,
+        COUNT(reactions.id) AS reaction_count
+        COUNT(comment.id) AS comment_count
+        
+    FROM users 
+
+    LEFT JOIN
+        
+
+                             
+    LEFT JOIN 
+      
+                           
+    GROUP BY 
+        users.id, users.username 
+    ORDER BY
+        total_engagement DESC
+    LIMIT 5;
+    """, con)
+    print(most_engaged_df)
 except Exception as e:
     print(f"Error occurred: {e}")
