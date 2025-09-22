@@ -35,6 +35,7 @@ try:
         AND id NOT IN (SELECT user_id FROM posts)
         AND id NOT IN (SELECT user_id FROM reactions)
     """, con)
+    print(f'\n\nLurker count')
     print(lurkers_df)
 except Exception as e:
     print(f"Error occurred: {e}")
@@ -70,4 +71,26 @@ try:
 except Exception as e:
     print(f"Error occurred: {e}")
 
-
+# Exercise 1.4
+try: 
+    spammers_df = pd.read_sql_query("""
+    SELECT 
+        users.id AS user_id,
+        users.username,
+        COUNT(*) AS identical_messages_count
+    FROM users
+    JOIN
+        comments
+    ON
+        users.id = comments.user_id
+    GROUP BY 
+        users.id, users.username, comments.content 
+    HAVING
+        COUNT(*) >= 3
+    ORDER BY
+        identical_messages_count DESC;          
+    """, con)
+    print(f'\n\nAll spamming users')
+    print(spammers_df)
+except Exception as e:
+    print(f"Error occurred: {e}")
