@@ -43,26 +43,31 @@ except Exception as e:
 try: 
     most_engaged_df = pd.read_sql_query("""
     SELECT 
-        user.id as user_id,
+        users.id AS user_id,
         users.username,
-        COUNT(reactions.id) AS reaction_count
-        COUNT(comment.id) AS comment_count
-        
+        COUNT(DISTINCT reactions.id) + COUNT(DISTINCT comments.id) AS total_engagement
     FROM users 
-
-    LEFT JOIN
-        
-
-                             
+    JOIN
+        posts
+    ON
+        users.id = posts.user_id
     LEFT JOIN 
-      
-                           
+        reactions
+    ON
+        posts.id = reactions.post_id              
+    LEFT JOIN 
+        comments
+    ON 
+        posts.id = comments.post_id     
     GROUP BY 
         users.id, users.username 
     ORDER BY
         total_engagement DESC
     LIMIT 5;
     """, con)
+    print(f'\n\nTop 5 most influencal users')
     print(most_engaged_df)
 except Exception as e:
     print(f"Error occurred: {e}")
+
+
